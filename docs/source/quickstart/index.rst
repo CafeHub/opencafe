@@ -148,7 +148,6 @@ logging and see what happens.
     client = BaseHTTPClient()
     response = client.get('https://api.github.com/repos/cafehub/opencafe/issues/42')
 
-**Review note: Jose, correct me if I'm not clear on the cclogging bits**
 The ``cclogging`` package simplifies parts of working with the standard Python
 logger, such as creating and initializing a logger. With logging enabled,
 let's execute our script again to see the difference.
