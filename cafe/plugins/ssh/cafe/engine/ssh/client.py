@@ -18,7 +18,6 @@ import time
 from paramiko import AutoAddPolicy, RSAKey, ProxyCommand
 from paramiko import AuthenticationException, SSHException
 from paramiko.client import SSHClient as ParamikoSSHClient
-from paramiko.resource import ResourceManager
 
 from cafe.engine.clients.base import BaseClient
 from cafe.engine.ssh.models.ssh_response import ExecResponse
@@ -144,7 +143,6 @@ class BaseSSHClient(BaseClient):
             self._log.error(exception.message)
         else:
             # Complete setup of the client
-            ResourceManager.register(self, ssh.get_transport())
             self.ssh_connection = ssh
 
     def is_proxy_needed(self):
