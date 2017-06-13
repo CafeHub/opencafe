@@ -73,10 +73,9 @@ class BaseCommandLineClient(BaseClient):
         # Process command we received
         command = "{0} {1}".format(
             self.base_command, cmd) if self.base_command else cmd
-        if args and args[0]:
-            for arg in args[0]:
-                command += "{0} {1}".format(command, arg)
-
+        
+        argstring = " ".join(args)
+        command = "{0} {1}".format(command, argstring)
         keys = set(os.environ).intersection(self.env_var_dict)
         set_env_vars = dict([(k, os.environ[k]) for k in keys])
 
