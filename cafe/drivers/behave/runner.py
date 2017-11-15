@@ -48,30 +48,7 @@ def entry_point():
     test_env_manager = TestEnvManager(product, config)
     test_env_manager.finalize()
 
-    product_root_test_path = os.path.join(
-        test_env_manager.test_repo_path, product)
-
-    """
-    Attempts to use first positional argument after product config as a
-    sub-path to the test repo path. If not a sub-path, raise exception.
-    """
-    if behave_opts and not behave_opts[0].startswith('-'):
-        user_provided_path = behave_opts[0]
-        attempted_sub_path = os.path.join(
-            product_root_test_path,
-            user_provided_path.lstrip(os.path.sep))
-
-        if os.path.exists(attempted_sub_path):
-            behave_opts[0] = attempted_sub_path
-        else:
-            raise Exception(
-                "{directory} is not a sub-path in the {repo} repo.".format(
-                    directory=behave_opts[0],
-                    repo=test_env_manager.test_repo_package))
-    else:
-        behave_opts.insert(0, product_root_test_path)
-
-    print_mug(behave_opts[0])
+    print_mug(test_env_manager)
     behave_opts.insert(0, "behave")
 
     subprocess.call(behave_opts)
@@ -79,9 +56,7 @@ def entry_point():
     exit(0)
 
 
-def print_mug(base_dir):
-    brew = "Brewing from {0}".format(base_dir)
-
+def print_mug(test_env):
     mug0 = "      ( ("
     mug1 = "       ) )"
     mug2 = "    ........."
@@ -103,9 +78,16 @@ def print_mug(base_dir):
         mug7,
         mug8))
 
-    print("-" * len(brew))
-    print(brew)
-    print("-" * len(brew))
+    config = "TEST CONFIG FILE..: {0}".format(test_env.test_config_file_path)
+    data = "DATA DIRECTORY....: {0}".format(test_env.test_data_directory)
+    log = "LOG PATH..........: {0}".format(test_env.test_log_dir)
+    wrapper_len = max(len(s) for s in [config, data, log])
+
+    print("-" * wrapper_len)
+    print(config)
+    print(data)
+    print(log)
+    print("-" * wrapper_len)
 
 
 if __name__ == '__main__':
