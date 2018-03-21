@@ -205,7 +205,7 @@ def print_exception(file_=None, method=None, value=None, exception=None):
     if value:
         print("{0}:".format(safe_decode(value)), file=sys.stderr, end=" ")
     if exception:
-        print("{0}:".format(safe_decode(exception)), file=sys.stderr, end=" ")
+        print("{0}:".format(safe_decode(exception.__name__)), file=sys.stderr, end=" ")
     print("\n{0}".format("-" * 70), file=sys.stderr)
     if exception is not None:
         print_exc(file=sys.stderr)
