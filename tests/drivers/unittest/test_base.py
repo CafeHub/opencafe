@@ -45,5 +45,5 @@ class PrintExceptionsTests(unittest.TestCase):
 
     def test_print_with_file_and_method_and_value_and_exception(self):
         with capture_stderr(print_exception, file_='File1', method='method1',
-                            value='value1', exception=TypeError) as output:
+                            value='value1', exception=TypeError()) as output:
             self.assertIn('File1: method1: value1: TypeError', output)
