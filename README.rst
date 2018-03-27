@@ -112,3 +112,14 @@ How to Contribute
 Contributions are always welcome. The CONTIBUTING.md file contains further
 guidance on submitting changes to this project and the review process that
 we follow.
+
+Release Steps
+-------------
+
+- pip install -r release-requires
+- bumpversion <major/minor/patch>
+- git push --tags
+- python setup.py sdist
+- python setup.py bdist_wheel
+- twine upload dist/* (requires cafehub PyPi credentials)
+- Create a release with release notes in GitHub
