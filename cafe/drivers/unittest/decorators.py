@@ -179,21 +179,22 @@ def DataDrivenClass(*dataset_lists):
                 new_class = type(class_name_new, (cls,), dataset.data)
                 new_class.__module__ = cls.__module__
 
-                # Find all test methods, add tags and other decorators,
-                # then set the appropriate test method on the new class
-                for member_name, member in inspect.getmembers(cls):
-                    if member_name.startswith("test_"):
-                        method_name, original_method = member_name, member
+                if dataset.metadata["tags"] or dataset.metadata["decorators"]:
+                    # Find all test methods, add tags and other decorators,
+                    # then set the appropriate test method on the new class
+                    for member_name, member in inspect.getmembers(cls):
+                        if member_name.startswith("test_"):
+                            method_name, original_method = member_name, member
 
-                        @functools.wraps(original_method)
-                        @tags(*dataset.metadata["tags"])
-                        def new_method(*args, **kwargs):
-                            original_method(*args, **kwargs)
+                            @functools.wraps(original_method)
+                            @tags(*dataset.metadata["tags"])
+                            def new_method(*args, **kwargs):
+                                original_method(*args, **kwargs)
 
-                        for decorator_ in dataset.metadata["decorators"]:
-                            new_method = decorator_(new_method)
+                            for decorator_ in dataset.metadata["decorators"]:
+                                new_method = decorator_(new_method)
 
-                        setattr(new_class, method_name, new_method)
+                            setattr(new_class, method_name, new_method)
 
                 setattr(module, class_name_new, new_class)
         return cls
