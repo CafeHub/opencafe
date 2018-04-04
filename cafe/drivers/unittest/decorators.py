@@ -189,7 +189,7 @@ def DataDrivenClass(*dataset_lists):
                             @functools.wraps(original_method)
                             @tags(*dataset.metadata["tags"])
                             def new_method(*args, **kwargs):
-                                original_method(*args, **kwargs)
+                                return original_method(*args, **kwargs)
 
                             for decorator_ in dataset.metadata["decorators"]:
                                 new_method = decorator_(new_method)
