@@ -13,6 +13,7 @@
 from importlib import import_module
 from unittest import TestCase
 from warnings import warn, simplefilter
+import functools
 import inspect
 import re
 
@@ -177,6 +178,24 @@ def DataDrivenClass(*dataset_lists):
                 class_name_new = "{0}_{1}".format(class_name, dataset.name)
                 new_class = type(class_name_new, (cls,), dataset.data)
                 new_class.__module__ = cls.__module__
+
+                if dataset.metadata["tags"] or dataset.metadata["decorators"]:
+                    # Find all test methods, add tags and other decorators,
+                    # then set the appropriate test method on the new class
+                    for member_name, member in inspect.getmembers(cls):
+                        if member_name.startswith("test_"):
+                            method_name, original_method = member_name, member
+
+                            @functools.wraps(original_method)
+                            @tags(*dataset.metadata["tags"])
+                            def new_method(*args, **kwargs):
+                                return original_method(*args, **kwargs)
+
+                            for decorator_ in dataset.metadata["decorators"]:
+                                new_method = decorator_(new_method)
+
+                            setattr(new_class, method_name, new_method)
+
                 setattr(module, class_name_new, new_class)
         return cls
     return decorator
